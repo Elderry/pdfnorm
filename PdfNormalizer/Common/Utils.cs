@@ -14,7 +14,7 @@ namespace PdfNormalizer.Common
             .Distinct().SelectMany(p =>
         {
             return File.GetAttributes(p).HasFlag(FileAttributes.Directory)
-            ? Directory.GetFiles(p, "*.pdf", SearchOption.AllDirectories)
+            ? Directory.GetFiles(p, "*.pdf", SearchOption.TopDirectoryOnly)
             : [p];
         });
 

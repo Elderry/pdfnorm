@@ -4,29 +4,43 @@ using System.CommandLine;
 using PdfNormalizer;
 using PdfNormalizer.Common;
 
-Argument<ICollection<string>> argumentPath = new("path")
+Argument<List<string>> pathArgument = new("path")
 {
     Arity = ArgumentArity.ZeroOrMore,
-    Description = "Path(s) of PDF files, default to current directory if not provided."
+    Description = "Path(s) of PDF files, if a directory path provided, all PDF files inside (only top level) will be normalized."
 };
 
-Option<bool> dryOption = new("--dry")
+Option<string> configurationOption = new("--configuration", "-c")
+{
+    Arity = ArgumentArity.ExactlyOne,
+    Description = "Configuration file that the normalizer follow."
+};
+
+Option<bool> dryOption = new("--dry", "-d")
 {
     Arity = ArgumentArity.ZeroOrOne,
-    Description = "Whether to try fix PDF file violations."
+    Description = "Whether to actually fix PDF file violations."
 };
 
 RootCommand rootCommand = new()
 {
-    Description = "Personal helper to normalize PDF files."
+    Description = "Normalize PDF files with configuration."
 };
-rootCommand.AddOption(dryOption);
-rootCommand.AddArgument(argumentPath);
+rootCommand.Options.Add(dryOption);
+rootCommand.Arguments.Add(pathArgument);
 
-rootCommand.SetHandler((dry, paths) =>
+rootCommand.SetAction(parseResult =>
 {
-    PDFNormalizer normalizer = new(Utils.GetPDFPaths(paths), dry);
+    List<string> rawPaths = parseResult.GetValue(pathArgument);
+    bool dry = parseResult.GetValue(dryOption);
+    string configurationPath = parseResult.GetValue(configurationOption);
+    PDFNormalizer normalizer = new(Utils.GetPDFPaths(rawPaths), dry);
     normalizer.Normalize();
-}, dryOption, argumentPath);
+});
 
-rootCommand.Invoke(args);
+rootCommand.Parse(args).Invoke();
+
+List<string> ParseAndValidatePath(List<string> paths)
+{
+
+}
