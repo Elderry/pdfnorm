@@ -4,5 +4,6 @@
     <File Path=".gitignore" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="Pdfnorm\Pdfnorm.csproj" />
+  <Project Path="PdfNorm\PdfNorm.csproj" />
+  <Project Path="PdfNorm.Tests\PdfNorm.Tests.csproj" />
 </Solution>

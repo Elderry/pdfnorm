@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Pdfnorm.Common
+namespace PdfNorm.Common
 {
     internal class IssueUtils
     {

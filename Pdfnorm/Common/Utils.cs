@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Pdfnorm.Common
+namespace PdfNorm.Common
 {
     internal class Utils
     {

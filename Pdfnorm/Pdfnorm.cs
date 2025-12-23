@@ -8,11 +8,11 @@ using iText.Kernel.XMP;
 using iText.Kernel.XMP.Impl;
 using iText.Kernel.XMP.Options;
 
-using Pdfnorm.Common;
+using PdfNorm.Common;
 
-using Utils = Pdfnorm.Common.Utils;
+using Utils = PdfNorm.Common.Utils;
 
-namespace Pdfnorm
+namespace PdfNorm
 {
     internal class PDFNormalizer
     {
