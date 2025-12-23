@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace PdfNormalizer.Common
+namespace Pdfnorm.Common
 {
     internal static class PrintUtils
     {

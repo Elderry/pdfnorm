@@ -1,4 +1,4 @@
-﻿namespace PdfNormalizer.Common
+﻿namespace Pdfnorm.Common
 {
     internal class FixRecord(string message)
     {

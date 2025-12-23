@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.CommandLine;
 
-using PdfNormalizer;
-using PdfNormalizer.Common;
+using Pdfnorm;
+using Pdfnorm.Common;
 
 Argument<List<string>> pathArgument = new("path")
 {
