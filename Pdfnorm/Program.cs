@@ -1,46 +1,69 @@
 ﻿using System.Collections.Generic;
 using System.CommandLine;
 
-using PdfNorm;
-using PdfNorm.Common;
+using Microsoft.Extensions.DependencyInjection;
 
-Argument<List<string>> pathArgument = new("path")
+using PdfNorm.Interfaces;
+using PdfNorm.Services;
+using PdfNorm.Services.Norms;
+
+// Setup DI Container
+ServiceCollection services = new();
+
+// Register services
+services.AddSingleton<IFileService, FileService>();
+services.AddSingleton<IProgressReporter, ConsoleProgressReporter>();
+services.AddSingleton<IssueReporter>();
+
+// Register norms
+services.AddSingleton<IPdfNorm, MetadataNorm>();
+services.AddSingleton<IPdfNorm, ViewNorm>();
+services.AddSingleton<IPdfNorm, OutlineNorm>();
+
+// Register processors
+services.AddSingleton<IPdfDocProcessor, PdfDocProcessor>();
+services.AddSingleton<IPdfNormService, PdfNormService>();
+
+ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+// Setup CLI
+Argument<List<string>> pathsArgument = new("paths")
 {
     Arity = ArgumentArity.ZeroOrMore,
-    Description = "Path(s) of PDF files, if a directory path provided, all PDF files inside (only top level) will be normalized."
+    Description = "Path(s) of PDF files or directories. If a directory is provided, all PDF files inside (only top level) will be normalized."
 };
 
-Option<string> configurationOption = new("--configuration", "-c")
+Option<string> configOption = new("--config", "-c")
 {
-    Arity = ArgumentArity.ExactlyOne,
-    Description = "Configuration file that the normalizer follow."
+    Description = "Path to JSON configuration file"
 };
 
-Option<bool> dryOption = new("--dry", "-d")
+Option<bool> dryRunOption = new("--dry-run", "-n")
 {
-    Arity = ArgumentArity.ZeroOrOne,
-    Description = "Whether to actually fix PDF file violations."
+    Description = "Preview changes without modifying files"
 };
 
 RootCommand rootCommand = new()
 {
     Description = "Normalize PDF files with configuration."
 };
-rootCommand.Options.Add(dryOption);
-rootCommand.Arguments.Add(pathArgument);
+rootCommand.Options.Add(dryRunOption);
+rootCommand.Options.Add(configOption);
+rootCommand.Arguments.Add(pathsArgument);
 
 rootCommand.SetAction(parseResult =>
 {
-    List<string> rawPaths = parseResult.GetValue(pathArgument);
-    bool dry = parseResult.GetValue(dryOption);
-    string configurationPath = parseResult.GetValue(configurationOption);
-    PDFNormalizer normalizer = new(Utils.GetPDFPaths(rawPaths), dry);
-    normalizer.Normalize();
+    List<string> rawPaths = parseResult.GetValue(pathsArgument);
+    bool dryRun = parseResult.GetValue(dryRunOption);
+    string configPath = parseResult.GetValue(configOption);
+
+    PdfNorm.Models.PdfConfig? config = ConfigService.LoadConfig(configPath);
+
+    IFileService fileService = serviceProvider.GetRequiredService<IFileService>();
+    IEnumerable<string> pdfPaths = fileService.GetPdfPaths(rawPaths);
+
+    IPdfNormService service = serviceProvider.GetRequiredService<IPdfNormService>();
+    service.NormalizeAll(pdfPaths, dryRun, config);
 });
 
 rootCommand.Parse(args).Invoke();
-
-List<string> ParseAndValidatePath(List<string> paths)
-{
-
-}

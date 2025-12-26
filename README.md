@@ -5,6 +5,7 @@ A command-line tool for batch normalizing PDF files using JSON configuration. Bu
 ## Features
 
 - **Batch Processing** - Process multiple PDFs or entire directories at once
+- **JSON Configuration** - Customize metadata with templates and tokens (see [CONFIG.md](CONFIG.md))
 - **Metadata Normalization** - Clean up and standardize PDF metadata (title, author)
 - **Initial View Settings** - Configure how PDFs open (page mode, layout, zoom)
 - **Bookmark Management** - Normalize PDF bookmarks/outlines and destinations
@@ -32,10 +33,11 @@ pdfnorm file1.pdf file2.pdf file3.pdf
 pdfnorm path/to/directory
 
 # Dry run (check without modifying)
-pdfnorm file.pdf --dry
+pdfnorm file.pdf --dry-run
 
-# With custom configuration (future feature)
-pdfnorm file.pdf --configuration config.json
+# With custom configuration
+pdfnorm file.pdf --config config.json
+pdfnorm *.pdf -c config.json
 ```
 
 ## What Gets Normalized
@@ -55,9 +57,19 @@ pdfnorm file.pdf --configuration config.json
 - **Title Cleanup** - Trims bookmark titles
 - **Destination Type** - Converts all destinations to "Fit Page" explicit destinations
 - **Named Destinations** - Converts named destinations to explicit destinations
+onfiguration
 
-## Current Behavior
+PdfNorm supports JSON configuration files for customizing metadata. See [CONFIG.md](CONFIG.md) for detailed documentation.
 
+**Quick example:**
+```json
+{
+  "Title": "{file_name}",
+  "Author": "Your Name"
+}
+```
+
+This sets each PDF's title to its filename and author to "Your Name"
 Currently hardcoded to normalize PDFs to a specific standard (useful for ebook/document collections). Future versions will support JSON configuration files to customize normalization rules.
 
 ## Requirements

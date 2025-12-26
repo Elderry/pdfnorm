@@ -1,58 +1,60 @@
-using PdfNorm.Common;
+using PdfNorm.Services;
 
-namespace PdfNorm.Tests;
-
-public class UtilsTests
+namespace PdfNorm.Tests
 {
-    [Fact]
-    public void CanBeTrimmed_ReturnsTrueForLeadingWhitespace()
+    [TestClass]
+    public class UtilsTests
     {
-        // Arrange
-        string input = "  test";
+        [TestMethod]
+        public void CanBeTrimmed_ReturnsTrueForLeadingWhitespace()
+        {
+            // Arrange
+            string input = "  test";
 
-        // Act
-        bool result = Utils.CanBeTrimmed(input);
+            // Act
+            bool result = TextUtils.CanBeTrimmed(input);
 
-        // Assert
-        Assert.True(result);
-    }
+            // Assert
+            Assert.IsTrue(result);
+        }
 
-    [Fact]
-    public void CanBeTrimmed_ReturnsTrueForTrailingWhitespace()
-    {
-        // Arrange
-        string input = "test  ";
+        [TestMethod]
+        public void CanBeTrimmed_ReturnsTrueForTrailingWhitespace()
+        {
+            // Arrange
+            string input = "test  ";
 
-        // Act
-        bool result = Utils.CanBeTrimmed(input);
+            // Act
+            bool result = TextUtils.CanBeTrimmed(input);
 
-        // Assert
-        Assert.True(result);
-    }
+            // Assert
+            Assert.IsTrue(result);
+        }
 
-    [Fact]
-    public void CanBeTrimmed_ReturnsFalseForNoWhitespace()
-    {
-        // Arrange
-        string input = "test";
+        [TestMethod]
+        public void CanBeTrimmed_ReturnsFalseForNoWhitespace()
+        {
+            // Arrange
+            string input = "test";
 
-        // Act
-        bool result = Utils.CanBeTrimmed(input);
+            // Act
+            bool result = TextUtils.CanBeTrimmed(input);
 
-        // Assert
-        Assert.False(result);
-    }
+            // Assert
+            Assert.IsFalse(result);
+        }
 
-    [Fact]
-    public void Trim_RemovesLeadingAndTrailingWhitespace()
-    {
-        // Arrange
-        string input = "  test  ";
+        [TestMethod]
+        public void Trim_RemovesLeadingAndTrailingWhitespace()
+        {
+            // Arrange
+            string input = "  test  ";
 
-        // Act
-        string result = Utils.Trim(input);
+            // Act
+            string result = TextUtils.Trim(input);
 
-        // Assert
-        Assert.Equal("test", result);
+            // Assert
+            Assert.AreEqual("test", result);
+        }
     }
 }
