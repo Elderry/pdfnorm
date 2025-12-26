@@ -7,171 +7,170 @@ using PdfNorm.Models;
 using PdfNorm.Services;
 using PdfNorm.Services.Norms;
 
-namespace PdfNorm.Tests
+namespace PdfNorm.Tests;
+
+[TestClass]
+public class MetadataNormTests
 {
-    [TestClass]
-    public class MetadataNormTests
+    private string _testPdfPath = null!;
+    private string _outputPdfPath = null!;
+
+    [TestInitialize]
+    public void Setup()
     {
-        private string _testPdfPath = null!;
-        private string _outputPdfPath = null!;
+        _testPdfPath = Path.Combine(Path.GetTempPath(), "test_input.pdf");
+        _outputPdfPath = Path.Combine(Path.GetTempPath(), "test_output.pdf");
 
-        [TestInitialize]
-        public void Setup()
+        // Create a simple test PDF with initial title
+        CreateTestPdf(_testPdfPath, "Original Title", "Original Author");
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+        if (File.Exists(_testPdfPath))
         {
-            _testPdfPath = Path.Combine(Path.GetTempPath(), "test_input.pdf");
-            _outputPdfPath = Path.Combine(Path.GetTempPath(), "test_output.pdf");
-
-            // Create a simple test PDF with initial title
-            CreateTestPdf(_testPdfPath, "Original Title", "Original Author");
+            File.Delete(_testPdfPath);
         }
 
-        [TestCleanup]
-        public void Cleanup()
+        if (File.Exists(_outputPdfPath))
         {
-            if (File.Exists(_testPdfPath))
-            {
-                File.Delete(_testPdfPath);
-            }
+            File.Delete(_outputPdfPath);
+        }
+    }
 
-            if (File.Exists(_outputPdfPath))
-            {
-                File.Delete(_outputPdfPath);
-            }
+    [TestMethod]
+    public void Normalize_ShouldChangeTitle_WhenConfigProvided()
+    {
+        // Arrange
+        PdfConfig config = new()
+        {
+            Title = "New Test Title"
+        };
+
+        IssueReporter issueReporter = new(new ConsoleProgressReporter());
+        MetadataNorm metadataNorm = new(issueReporter);
+        metadataNorm.SetConfig(config);
+
+        List<FixRecord> fixRecords = [];
+
+        // Act
+        using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
+        {
+            metadataNorm.Normalize(pdfDoc, "test", false, fixRecords);
         }
 
-        [TestMethod]
-        public void Normalize_ShouldChangeTitle_WhenConfigProvided()
+        // Assert
+        string actualTitle = GetPdfTitle(_outputPdfPath);
+        Assert.AreEqual("New Test Title", actualTitle);
+        Assert.IsNotEmpty(fixRecords, "Should have recorded the fix");
+    }
+
+    [TestMethod]
+    public void Normalize_ShouldUseFileNameToken_WhenConfigContainsToken()
+    {
+        // Arrange
+        PdfConfig config = new()
         {
-            // Arrange
-            PdfConfig config = new()
-            {
-                Title = "New Test Title"
-            };
+            Title = "Document - {file_name}"
+        };
 
-            IssueReporter issueReporter = new(new ConsoleProgressReporter());
-            MetadataNorm metadataNorm = new(issueReporter);
-            metadataNorm.SetConfig(config);
+        IssueReporter issueReporter = new(new ConsoleProgressReporter());
+        MetadataNorm metadataNorm = new(issueReporter);
+        metadataNorm.SetConfig(config);
 
-            List<FixRecord> fixRecords = [];
+        List<FixRecord> fixRecords = [];
 
-            // Act
-            using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
-            {
-                metadataNorm.Normalize(pdfDoc, "test", false, fixRecords);
-            }
-
-            // Assert
-            string actualTitle = GetPdfTitle(_outputPdfPath);
-            Assert.AreEqual("New Test Title", actualTitle);
-            Assert.IsNotEmpty(fixRecords, "Should have recorded the fix");
+        // Act
+        using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
+        {
+            metadataNorm.Normalize(pdfDoc, "mydoc", false, fixRecords);
         }
 
-        [TestMethod]
-        public void Normalize_ShouldUseFileNameToken_WhenConfigContainsToken()
+        // Assert
+        string actualTitle = GetPdfTitle(_outputPdfPath);
+        Assert.AreEqual("Document - mydoc", actualTitle);
+    }
+
+    [TestMethod]
+    public void Normalize_ShouldChangeAuthor_WhenConfigProvided()
+    {
+        // Arrange
+        PdfConfig config = new()
         {
-            // Arrange
-            PdfConfig config = new()
-            {
-                Title = "Document - {file_name}"
-            };
+            Author = "New Author Name"
+        };
 
-            IssueReporter issueReporter = new(new ConsoleProgressReporter());
-            MetadataNorm metadataNorm = new(issueReporter);
-            metadataNorm.SetConfig(config);
+        IssueReporter issueReporter = new(new ConsoleProgressReporter());
+        MetadataNorm metadataNorm = new(issueReporter);
+        metadataNorm.SetConfig(config);
 
-            List<FixRecord> fixRecords = [];
+        List<FixRecord> fixRecords = [];
 
-            // Act
-            using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
-            {
-                metadataNorm.Normalize(pdfDoc, "mydoc", false, fixRecords);
-            }
-
-            // Assert
-            string actualTitle = GetPdfTitle(_outputPdfPath);
-            Assert.AreEqual("Document - mydoc", actualTitle);
+        // Act
+        using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
+        {
+            metadataNorm.Normalize(pdfDoc, "test", false, fixRecords);
         }
 
-        [TestMethod]
-        public void Normalize_ShouldChangeAuthor_WhenConfigProvided()
+        // Assert
+        string actualAuthor = GetPdfAuthor(_outputPdfPath);
+        Assert.AreEqual("New Author Name", actualAuthor);
+    }
+
+    [TestMethod]
+    public void Normalize_ShouldTrimTitle_WhenNoConfigAndTitleHasWhitespace()
+    {
+        // Arrange
+        CreateTestPdf(_testPdfPath, "  Title With Spaces  ", "Author");
+
+        IssueReporter issueReporter = new(new ConsoleProgressReporter());
+        MetadataNorm metadataNorm = new(issueReporter);
+        metadataNorm.SetConfig(null); // No config
+
+        List<FixRecord> fixRecords = [];
+
+        // Act
+        using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
         {
-            // Arrange
-            PdfConfig config = new()
-            {
-                Author = "New Author Name"
-            };
-
-            IssueReporter issueReporter = new(new ConsoleProgressReporter());
-            MetadataNorm metadataNorm = new(issueReporter);
-            metadataNorm.SetConfig(config);
-
-            List<FixRecord> fixRecords = [];
-
-            // Act
-            using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
-            {
-                metadataNorm.Normalize(pdfDoc, "test", false, fixRecords);
-            }
-
-            // Assert
-            string actualAuthor = GetPdfAuthor(_outputPdfPath);
-            Assert.AreEqual("New Author Name", actualAuthor);
+            metadataNorm.Normalize(pdfDoc, "test", false, fixRecords);
         }
 
-        [TestMethod]
-        public void Normalize_ShouldTrimTitle_WhenNoConfigAndTitleHasWhitespace()
-        {
-            // Arrange
-            CreateTestPdf(_testPdfPath, "  Title With Spaces  ", "Author");
+        // Assert
+        string actualTitle = GetPdfTitle(_outputPdfPath);
+        Assert.AreEqual("Title With Spaces", actualTitle);
+    }
 
-            IssueReporter issueReporter = new(new ConsoleProgressReporter());
-            MetadataNorm metadataNorm = new(issueReporter);
-            metadataNorm.SetConfig(null); // No config
+    private void CreateTestPdf(string path, string title, string author)
+    {
+        using PdfDocument pdfDoc = new(new PdfWriter(path));
+        pdfDoc.AddNewPage();
 
-            List<FixRecord> fixRecords = [];
+        // Set metadata via XMP
+        XMPMeta xmp = XMPMetaFactory.Create();
 
-            // Act
-            using (PdfDocument pdfDoc = new(new PdfReader(_testPdfPath), new PdfWriter(_outputPdfPath)))
-            {
-                metadataNorm.Normalize(pdfDoc, "test", false, fixRecords);
-            }
+        PropertyOptions titleOptions = new();
+        titleOptions.SetArray(true);
+        xmp.AppendArrayItem(XMPConst.NS_DC, "title", titleOptions, title, null);
 
-            // Assert
-            string actualTitle = GetPdfTitle(_outputPdfPath);
-            Assert.AreEqual("Title With Spaces", actualTitle);
-        }
+        PropertyOptions authorOptions = new();
+        authorOptions.SetArray(true);
+        xmp.AppendArrayItem(XMPConst.NS_DC, "creator", authorOptions, author, null);
 
-        private void CreateTestPdf(string path, string title, string author)
-        {
-            using PdfDocument pdfDoc = new(new PdfWriter(path));
-            pdfDoc.AddNewPage();
+        pdfDoc.SetXmpMetadata(xmp);
+    }
 
-            // Set metadata via XMP
-            XMPMeta xmp = XMPMetaFactory.Create();
+    private string GetPdfTitle(string path)
+    {
+        using PdfDocument pdfDoc = new(new PdfReader(path));
+        XMPMeta? xmp = pdfDoc.GetXmpMetadata(true);
+        return xmp == null ? string.Empty : xmp.GetArrayItem(XMPConst.NS_DC, "title", 1)?.GetValue() ?? string.Empty;
+    }
 
-            PropertyOptions titleOptions = new();
-            titleOptions.SetArray(true);
-            xmp.AppendArrayItem(XMPConst.NS_DC, "title", titleOptions, title, null);
-
-            PropertyOptions authorOptions = new();
-            authorOptions.SetArray(true);
-            xmp.AppendArrayItem(XMPConst.NS_DC, "creator", authorOptions, author, null);
-
-            pdfDoc.SetXmpMetadata(xmp);
-        }
-
-        private string GetPdfTitle(string path)
-        {
-            using PdfDocument pdfDoc = new(new PdfReader(path));
-            XMPMeta? xmp = pdfDoc.GetXmpMetadata(true);
-            return xmp == null ? string.Empty : xmp.GetArrayItem(XMPConst.NS_DC, "title", 1)?.GetValue() ?? string.Empty;
-        }
-
-        private string GetPdfAuthor(string path)
-        {
-            using PdfDocument pdfDoc = new(new PdfReader(path));
-            XMPMeta? xmp = pdfDoc.GetXmpMetadata(true);
-            return xmp == null ? string.Empty : xmp.GetArrayItem(XMPConst.NS_DC, "creator", 1)?.GetValue() ?? string.Empty;
-        }
+    private string GetPdfAuthor(string path)
+    {
+        using PdfDocument pdfDoc = new(new PdfReader(path));
+        XMPMeta? xmp = pdfDoc.GetXmpMetadata(true);
+        return xmp == null ? string.Empty : xmp.GetArrayItem(XMPConst.NS_DC, "creator", 1)?.GetValue() ?? string.Empty;
     }
 }

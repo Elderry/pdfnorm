@@ -30,6 +30,10 @@ dotnet_diagnostic.IDE0058.severity = none
 
 #### .NET Coding Conventions ####
 
+# Prefer file scoped namespace declarations
+csharp_style_namespace_declarations = file_scoped
+
 # Organize usings
 dotnet_separate_import_directive_groups = true
 dotnet_sort_system_directives_first = true
+
