@@ -1,29 +1,31 @@
-# pdfnorm
+# 📄 PdfNorm
+
+![Tests](https://github.com/Elderry/pdfnorm/actions/workflows/tests.yml/badge.svg)
 
 A command-line tool for batch normalizing PDF files using JSON configuration. Built with [iText](https://itextpdf.com/) for .NET.
 
-## Features
+## ✨ Features
 
 - **Batch Processing** - Process multiple PDFs or entire directories at once
-- **JSON Configuration** - Customize metadata with templates and tokens (see [CONFIG.md](CONFIG.md))
-- **Metadata Normalization** - Clean up and standardize PDF metadata (title, author)
-- **Initial View Settings** - Configure how PDFs open (page mode, layout, zoom)
-- **Bookmark Management** - Normalize PDF bookmarks/outlines and destinations
+- **JSON Configuration** - Fully customizable via JSON config file (see [CONFIG.md](CONFIG.md))
+- **Metadata Normalization** - Set title, author with dynamic tokens like `{file_name}`
+- **Initial View Settings** - Configure page mode, layout, zoom level, and open-to page
+- **Bookmark Management** - Normalize bookmark titles and destination zoom modes
 - **Dry Run Mode** - Preview changes without modifying files
 - **Detailed Reporting** - See exactly what issues were found and fixed
 
-## Installation
+## 🔧 Installation
 
 ```bash
 dotnet build -c Release
 ```
 
-The executable will be in `Pdfnorm/bin/Release/net9.0/`
+The executable will be in `PdfNorm/bin/Release/net10.0/`
 
-## Usage
+## 🚀 Usage
 
 ```bash
-# Normalize single PDF
+# Normalize single PDF with defaults
 pdfnorm path/to/file.pdf
 
 # Normalize multiple PDFs
@@ -32,51 +34,59 @@ pdfnorm file1.pdf file2.pdf file3.pdf
 # Normalize all PDFs in a directory
 pdfnorm path/to/directory
 
-# Dry run (check without modifying)
+# Preview changes without modifying files
 pdfnorm file.pdf --dry-run
 
-# With custom configuration
+# Use custom configuration file
 pdfnorm file.pdf --config config.json
-pdfnorm *.pdf -c config.json
+pdfnorm *.pdf -c myconfig.json
+
+# Combine options
+pdfnorm path/to/directory --config config.json --dry-run
 ```
 
-## What Gets Normalized
+## 🔄 What Gets Normalized
+
+Without configuration, PdfNorm applies sensible defaults:
 
 ### Metadata
-- **Title** - Removes leading/trailing whitespace
+- **Title** - Trims leading/trailing whitespace
 - **Author** - Trims author names
-- **Display Settings** - Sets display document title preference
+- **Display Settings** - Shows document title in window title bar
 
 ### Initial View
-- **Page Mode** - Sets to `UseOutlines` (show bookmarks panel)
-- **Page Layout** - Sets to `TwoPageRight` (two-page view, odd pages on right)
+- **Page Mode** - `UseOutlines` (show bookmarks panel)
+- **Page Layout** - `TwoPageRight` (two-page view, odd pages on right)
 - **Open Page** - Opens to page 1
-- **Zoom Level** - Sets to "Fit Page"
 
 ### Bookmarks
-- **Title Cleanup** - Trims bookmark titles
-- **Destination Type** - Converts all destinations to "Fit Page" explicit destinations
-- **Named Destinations** - Converts named destinations to explicit destinations
-onfiguration
+- **Title Cleanup** - Trims whitespace from bookmark titles
+- **Destination Mode** - Normalizes zoom to "Fit Page"
 
-PdfNorm supports JSON configuration files for customizing metadata. See [CONFIG.md](CONFIG.md) for detailed documentation.
+## ⚙️ Configuration
 
-**Quick example:**
+PdfNorm supports JSON configuration files for full control. See [CONFIG.md](CONFIG.md) for complete documentation.
+
+**Example config.json:**
 ```json
 {
   "Title": "{file_name}",
-  "Author": "Your Name"
+  "Author": "Your Name",
+  "DisplayDocTitle": true,
+  "PageMode": "Bookmarks",
+  "PageLayout": "TwoColumnRight",
+  "OpenToPage": 1,
+  "BookmarkZoom": "FitWidth"
 }
 ```
 
-This sets each PDF's title to its filename and author to "Your Name"
-Currently hardcoded to normalize PDFs to a specific standard (useful for ebook/document collections). Future versions will support JSON configuration files to customize normalization rules.
+**Configuration features:**
+- Set metadata with `{file_name}` token for dynamic values
+- Configure viewer preferences (page mode, layout)
+- Set initial view (page number, zoom level)
+- Control bookmark zoom behavior
+- All fields optional - omit to use defaults or trim existing values
 
-## Requirements
-
-- .NET 10.0
-- iText 9.4.0
-
-## License
+## 📜 License
 
 See [LICENSE](LICENSE) file for details.
