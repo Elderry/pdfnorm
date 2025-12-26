@@ -189,7 +189,7 @@ public class ViewNorm(IssueReporter issueReporter) : IPdfNorm
                 dryRun);
         }
 
-        PdfName destLocation = openDestArray!.Get(1) as PdfName;
+        PdfName? destLocation = openDestArray!.Get(1) as PdfName;
         if (destLocation != PdfName.Fit)
         {
             _issueReporter.ReportAndFix(
@@ -205,7 +205,7 @@ public class ViewNorm(IssueReporter issueReporter) : IPdfNorm
 
     private static void NormalizeDestArray(PdfArray destArray)
     {
-        PdfName destLocation = destArray!.Get(1) as PdfName;
+        PdfName? destLocation = destArray!.Get(1) as PdfName;
 
         if (destLocation == PdfName.FitH || destLocation == PdfName.FitBH)
         {

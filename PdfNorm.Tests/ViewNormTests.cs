@@ -1,4 +1,9 @@
+using System.Collections.Generic;
+using System.IO;
+
 using iText.Kernel.Pdf;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using PdfNorm.Common;
 using PdfNorm.Models;

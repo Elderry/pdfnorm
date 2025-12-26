@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+using System.IO;
+
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Navigation;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using PdfNorm.Common;
 using PdfNorm.Models;

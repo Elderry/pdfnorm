@@ -1,6 +1,11 @@
+using System.Collections.Generic;
+using System.IO;
+
 using iText.Kernel.Pdf;
 using iText.Kernel.XMP;
 using iText.Kernel.XMP.Options;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using PdfNorm.Common;
 using PdfNorm.Models;

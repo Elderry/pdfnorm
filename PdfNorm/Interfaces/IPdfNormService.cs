@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+
 using PdfNorm.Models;
 
-namespace PdfNorm.Interfaces
+namespace PdfNorm.Interfaces;
+
+public interface IPdfNormService
 {
-    public interface IPdfNormService
-    {
-        void NormalizeAll(IEnumerable<string> pdfPaths, bool dryRun, PdfConfig? config = null);
-    }
+    void NormalizeAll(IEnumerable<string> pdfPaths, bool dryRun, PdfConfig? config = null);
 }

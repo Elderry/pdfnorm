@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -53,9 +54,15 @@ rootCommand.Arguments.Add(pathsArgument);
 
 rootCommand.SetAction(parseResult =>
 {
-    List<string> rawPaths = parseResult.GetValue(pathsArgument);
+    List<string>? rawPaths = parseResult.GetValue(pathsArgument);
     bool dryRun = parseResult.GetValue(dryRunOption);
-    string configPath = parseResult.GetValue(configOption);
+    string? configPath = parseResult.GetValue(configOption);
+
+    if (rawPaths == null || rawPaths.Count == 0)
+    {
+        Console.WriteLine("No paths specified.");
+        return;
+    }
 
     PdfNorm.Models.PdfConfig? config = ConfigService.LoadConfig(configPath);
 
