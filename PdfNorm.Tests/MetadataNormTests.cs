@@ -1,6 +1,5 @@
 using iText.Kernel.Pdf;
 using iText.Kernel.XMP;
-using iText.Kernel.XMP.Impl;
 using iText.Kernel.XMP.Options;
 
 using PdfNorm.Common;
@@ -149,26 +148,30 @@ namespace PdfNorm.Tests
 
             // Set metadata via XMP
             XMPMeta xmp = XMPMetaFactory.Create();
-            xmp.SetArrayItem(XMPConst.NS_DC, "title", 1, title);
 
-            PropertyOptions options = new();
-            options.SetArray(true);
-            xmp.AppendArrayItem(XMPConst.NS_DC, "creator", options, author, null);
+            PropertyOptions titleOptions = new();
+            titleOptions.SetArray(true);
+            xmp.AppendArrayItem(XMPConst.NS_DC, "title", titleOptions, title, null);
+
+            PropertyOptions authorOptions = new();
+            authorOptions.SetArray(true);
+            xmp.AppendArrayItem(XMPConst.NS_DC, "creator", authorOptions, author, null);
+
             pdfDoc.SetXmpMetadata(xmp);
         }
 
         private string GetPdfTitle(string path)
         {
             using PdfDocument pdfDoc = new(new PdfReader(path));
-            XMPMeta xmp = XMPMetaParser.Parse(pdfDoc.GetXmpMetadata(), new ParseOptions());
-            return xmp.GetArrayItem(XMPConst.NS_DC, "title", 1)?.GetValue() ?? string.Empty;
+            XMPMeta? xmp = pdfDoc.GetXmpMetadata(true);
+            return xmp == null ? string.Empty : xmp.GetArrayItem(XMPConst.NS_DC, "title", 1)?.GetValue() ?? string.Empty;
         }
 
         private string GetPdfAuthor(string path)
         {
             using PdfDocument pdfDoc = new(new PdfReader(path));
-            XMPMeta xmp = XMPMetaParser.Parse(pdfDoc.GetXmpMetadata(), new ParseOptions());
-            return xmp.GetArrayItem(XMPConst.NS_DC, "creator", 1)?.GetValue() ?? string.Empty;
+            XMPMeta? xmp = pdfDoc.GetXmpMetadata(true);
+            return xmp == null ? string.Empty : xmp.GetArrayItem(XMPConst.NS_DC, "creator", 1)?.GetValue() ?? string.Empty;
         }
     }
 }

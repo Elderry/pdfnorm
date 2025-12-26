@@ -23,7 +23,7 @@ namespace PdfNorm.Services.Norms
 
         public void Normalize(PdfDocument pdfDoc, string pdfName, bool dryRun, List<FixRecord> fixRecords)
         {
-            XMPMeta xmp = XMPMetaParser.Parse(pdfDoc.GetXmpMetadata(), new ParseOptions());
+            XMPMeta xmp = pdfDoc.GetXmpMetadata(true);
 
             NormalizeTitle(xmp, pdfName, dryRun, fixRecords);
             NormalizeAuthors(xmp, pdfName, dryRun, fixRecords);
