@@ -16,13 +16,33 @@ A command-line tool for batch normalizing PDF files using JSON configuration. Bu
 
 ## 🔧 Installation
 
-```bash
+### Prerequisites
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) or later
+
+### Build from Source
+```powershell
+# Clone the repository
+git clone https://github.com/Elderry/pdfnorm.git
+cd pdfnorm
+
+# Build the project
 dotnet build -c Release
 ```
 
 The executable will be in `PdfNorm/bin/Release/net10.0/`
 
+### Install Locally (Windows)
+```powershell
+# Run the publish script to install to %LOCALAPPDATA%\PdfNorm
+.\publish.ps1
+
+# Add to PATH (optional, for easy access from anywhere)
+# Add %LOCALAPPDATA%\PdfNorm to your system PATH environment variable
+```
+
 ## 🚀 Usage
+
+### Basic Commands
 
 ```bash
 # Normalize single PDF with defaults
@@ -34,7 +54,7 @@ pdfnorm file1.pdf file2.pdf file3.pdf
 # Normalize all PDFs in a directory
 pdfnorm path/to/directory
 
-# Preview changes without modifying files
+# Preview changes without modifying files (no files modified)
 pdfnorm file.pdf --dry-run
 
 # Use custom configuration file
@@ -44,6 +64,15 @@ pdfnorm *.pdf -c myconfig.json
 # Combine options
 pdfnorm path/to/directory --config config.json --dry-run
 ```
+
+### Command-Line Options
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--config <path>` | `-c` | Path to JSON configuration file |
+| `--dry-run` | `-d` | Preview changes without modifying files |
+| `--help` | `-h` | Show help information |
+| `--version` | | Display version information |
 
 ## 🔄 What Gets Normalized
 
@@ -86,6 +115,22 @@ PdfNorm supports JSON configuration files for full control. See [CONFIG.md](CONF
 - Set initial view (page number, zoom level)
 - Control bookmark zoom behavior
 - All fields optional - omit to use defaults or trim existing values
+
+## 🧪 Testing
+
+The project includes comprehensive unit tests using MSTest.
+
+```powershell
+# Run all tests
+dotnet test
+
+# Run tests with detailed output
+dotnet test --verbosity normal
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## 📜 License
 

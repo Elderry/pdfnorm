@@ -46,8 +46,8 @@ Sets the PDF document title. When specified, all processed PDFs will have their 
 #### `Author`
 Sets the PDF document author. When specified, all processed PDFs will have their author updated to this value.
 
-**Type:** `string`  
-**Optional:** Yes  
+**Type:** `string`
+**Optional:** Yes
 **Supports tokens:** No
 
 **Example:**
@@ -62,9 +62,9 @@ Sets the PDF document author. When specified, all processed PDFs will have their
 #### `DisplayDocTitle`
 Controls what is shown in the PDF viewer's window title bar.
 
-**Type:** `boolean`  
-**Optional:** Yes  
-**Default:** `true` (show document title)  
+**Type:** `boolean`
+**Optional:** Yes
+**Default:** `true` (show document title)
 **Supports tokens:** No
 
 **Values:**
@@ -83,9 +83,9 @@ Controls what is shown in the PDF viewer's window title bar.
 #### `PageMode`
 Controls which panels are displayed when the PDF is opened (Navigation tab in Acrobat).
 
-**Type:** `string`  
-**Optional:** Yes  
-**Default:** `"Bookmarks"` (Bookmarks Panel and Page)  
+**Type:** `string`
+**Optional:** Yes
+**Default:** `"Bookmarks"` (Bookmarks Panel and Page)
 **Supports tokens:** No
 
 **Values:**
@@ -107,9 +107,9 @@ Controls which panels are displayed when the PDF is opened (Navigation tab in Ac
 #### `PageLayout`
 Controls how pages are displayed (single page, continuous scroll, facing pages, etc.).
 
-**Type:** `string`  
-**Optional:** Yes  
-**Default:** `"TwoPageRight"` (two pages side-by-side, odd pages on right)  
+**Type:** `string`
+**Optional:** Yes
+**Default:** `"TwoPageRight"` (two pages side-by-side, odd pages on right)
 **Supports tokens:** No
 
 **Values:**
@@ -132,9 +132,9 @@ Controls how pages are displayed (single page, continuous scroll, facing pages, 
 #### `OpenToPage`
 Sets which page the PDF opens to when first opened.
 
-**Type:** `integer`  
-**Optional:** Yes  
-**Default:** `1` (first page)  
+**Type:** `integer`
+**Optional:** Yes
+**Default:** `1` (first page)
 **Supports tokens:** No
 
 **Example:**
@@ -152,9 +152,9 @@ Sets which page the PDF opens to when first opened.
 #### `BookmarkZoom`
 Sets the zoom/fit mode for bookmark destinations. Controls how the page displays when clicking a bookmark.
 
-**Type:** `string`  
-**Optional:** Yes  
-**Default:** `"FitPage"` (fit entire page in window)  
+**Type:** `string`
+**Optional:** Yes
+**Default:** `"FitPage"` (fit entire page in window)
 **Supports tokens:** No
 
 **Values:**
