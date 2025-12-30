@@ -1,10 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Application Configuration -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <!-- Code Quality -->
+  <PropertyGroup>
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <!-- Version Information -->
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
